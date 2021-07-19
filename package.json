@@ -10,7 +10,7 @@
     "!/lib/**/*.test.d.ts"
   ],
   "scripts": {
-    "clean": "rimraf lib",
+    "clean": "rimraf lib dist",
     "prettier-fix": "prettier \"./src/**/*\" \"./demo/**/*\" \"!./**/*.jpg\" --list-different --write",
     "prettier": "prettier \"./src/**/*\" \"./demo/**/*\" \"!./**/*.jpg\" --list-different",
     "tslint": "tslint --project .",
@@ -23,7 +23,8 @@
     "start:tsc": "tsc -b -w .",
     "preversion": "npm outdated && run-s build demo && git add docs",
     "postversion": "git push && git push origin v${npm_package_version}",
-    "benchmark": "node benchmark"
+    "benchmark": "node benchmark",
+    "bundle:web": "run-s build && rimraf dist && webpack --config webpack.bundle.js --mode production"
   },
   "repository": {
     "type": "git",

@@ -2,3 +2,4 @@
 /lib/
 /coverage/
 /tsconfig.tsbuildinfo
+/dist/
