@@ -208,7 +208,8 @@ describe.each<[string, (() => string[]) | undefined]>([
         })
 
         afterAll(() => {
-            window.Element.prototype.getAttributeNames = originalGetAttributeNames
+            window.Element.prototype.getAttributeNames =
+                originalGetAttributeNames
         })
 
         describe('shallow', () => {
@@ -275,10 +276,9 @@ describe.each<[string, (() => string[]) | undefined]>([
             })
             test('extraneous child', () => {
                 const differentRootNode = rootNode.cloneNode(true)
-                ;((differentRootNode.lastChild as Node)
-                    .lastChild as Node).appendChild(
-                    document.createTextNode('different'),
-                )
+                ;(
+                    (differentRootNode.lastChild as Node).lastChild as Node
+                ).appendChild(document.createTextNode('different'))
                 expect(
                     areNodesEqual(
                         rootNode.cloneNode(true),
@@ -289,8 +289,9 @@ describe.each<[string, (() => string[]) | undefined]>([
             })
             test('child with a different attribute', () => {
                 const differentRootNode = rootNode.cloneNode(true)
-                ;((differentRootNode.lastChild as Node)
-                    .lastChild as Element).setAttribute('data-a', 'a')
+                ;(
+                    (differentRootNode.lastChild as Node).lastChild as Element
+                ).setAttribute('data-a', 'a')
                 expect(
                     areNodesEqual(
                         rootNode.cloneNode(true),
@@ -330,8 +331,9 @@ describe('getAncestors', () => {
     ]
 
     testData.forEach(([node, rootNode, ancestors]) => {
-        test(`node: ${node.nodeName}; root: ${rootNode &&
-            rootNode.nodeName}`, () => {
+        test(`node: ${node.nodeName}; root: ${
+            rootNode && rootNode.nodeName
+        }`, () => {
             expect(getAncestors(node, rootNode)).toStrictEqual(ancestors)
         })
     })
@@ -545,7 +547,7 @@ describe('diffText', () => {
             '\uDFFF\uF900',
         ])(
             'identical text without node markers inside changed text (%#)',
-            string => {
+            (string) => {
                 expect(
                     diffText(`abcdef${string}ghijkl`, `123456${string}7890-=`),
                 ).toStrictEqual([
@@ -562,7 +564,7 @@ describe('diffText', () => {
             '\uE000!\uF8FF',
         ])(
             'identical text with node markers inside changed text (%#)',
-            string => {
+            (string) => {
                 expect(
                     diffText(`abcdef${string}ghijkl`, `123456${string}7890-=`),
                 ).toStrictEqual([
