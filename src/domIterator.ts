@@ -7,7 +7,7 @@ export interface DomIteratorOptions {
 
 export class DomIterator implements Iterator<Node> {
     private nextNode: Node | null
-    private descend: boolean = true
+    private descend = true
 
     public constructor(
         private rootNode: Node,

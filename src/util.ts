@@ -71,11 +71,7 @@ function getAttributeNames(element: Element): string[] {
  * @param deep If true, the child nodes are compared recursively too.
  * @returns `true`, if the 2 nodes are equal, otherwise `false`.
  */
-export function areNodesEqual(
-    node1: Node,
-    node2: Node,
-    deep: boolean = false,
-): boolean {
+export function areNodesEqual(node1: Node, node2: Node, deep = false): boolean {
     if (node1 === node2) {
         return true
     }
@@ -152,9 +148,7 @@ export function getAncestors(node: Node, rootNode: Node | null = null): Node[] {
     return ancestors
 }
 
-export function never(
-    message: string = 'visual-dom-diff: Should never happen',
-): never {
+export function never(message = 'visual-dom-diff: Should never happen'): never {
     throw new Error(message)
 }
 

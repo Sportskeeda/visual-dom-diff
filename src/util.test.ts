@@ -588,7 +588,7 @@ describe('cleanUpNodeMarkers', () => {
         ]
         cleanUpNodeMarkers(diff)
         expect(diff).toStrictEqual([
-            [DIFF_EQUAL, `abc`],
+            [DIFF_EQUAL, 'abc'],
             [DIFF_DELETE, `${pChar}${ulChar}${liChar}${liChar}`],
             [
                 DIFF_EQUAL,
@@ -604,7 +604,7 @@ describe('cleanUpNodeMarkers', () => {
         ]
         cleanUpNodeMarkers(diff)
         expect(diff).toStrictEqual([
-            [DIFF_EQUAL, `abc`],
+            [DIFF_EQUAL, 'abc'],
             [DIFF_INSERT, `${pChar}${ulChar}${liChar}${liChar}`],
             [
                 DIFF_EQUAL,

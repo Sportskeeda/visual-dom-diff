@@ -1,10 +1,12 @@
+/* eslint-disable no-undef */
+/* eslint-disable @typescript-eslint/no-var-requires */
 const { CleanWebpackPlugin } = require('clean-webpack-plugin')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 
 
 module.exports = (env, argv) => {
     // const isDevServer = process.argv[1].indexOf('webpack-dev-server') >= 0;
-    console.log(`This is the Webpack 'mode': ${argv.mode}`);
+    console.log(`This is the Webpack 'mode': ${argv.mode}`)
     const config = {
         entry: __dirname + '/demo/main.js',
         output: {
@@ -15,7 +17,7 @@ module.exports = (env, argv) => {
             rules: [
                 {
                     test: /\.css$/,
-                    use: ["style-loader", "css-loader"]
+                    use: ['style-loader', 'css-loader']
                 },
                 {
                     test: /\.(png|svg|jpg|gif)$/,
@@ -33,7 +35,7 @@ module.exports = (env, argv) => {
             }),
         ],
         devServer: {
-            static: "./demo"
+            static: './demo'
         },
         optimization: {
             runtimeChunk: 'single',
@@ -43,5 +45,5 @@ module.exports = (env, argv) => {
     if (argv.mode !== 'development') {
         config.plugins.push(new CleanWebpackPlugin())
     }
-    return config;
+    return config
 }
