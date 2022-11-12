@@ -30,6 +30,10 @@ export function strictEqual<T>(item1: T, item2: T): boolean {
     return item1 === item2
 }
 
+export function isNewLineNode(node: Node): node is Text {
+    return isText(node) && (node.textContent || '').replace(/ /g, '') === '\n'
+}
+
 export function areArraysEqual<T>(
     array1: T[],
     array2: T[],
@@ -315,11 +319,16 @@ export function isTableValid(table: Node, verifyColumns: boolean): boolean {
     let columnCount: number | undefined
     return validateTable(table)
 
-    function validateTable({ childNodes }: Node): boolean {
+    function validateTable(node: Node): boolean {
+        const { childNodes } = node
         const l = childNodes.length
         let i = 0
 
-        if (i < l && childNodes[i].nodeName === 'CAPTION') {
+        if (
+            i < l &&
+            (childNodes[i].nodeName === 'CAPTION' ||
+                isNewLineNode(childNodes[i]))
+        ) {
             i++
         }
 
@@ -361,7 +370,12 @@ export function isTableValid(table: Node, verifyColumns: boolean): boolean {
         return true
     }
 
-    function validateRow({ childNodes, nodeName }: Node): boolean {
+    function validateRow(node: Node): boolean {
+        if (isNewLineNode(node)) {
+            return true
+        }
+
+        const { childNodes, nodeName } = node
         if (nodeName !== 'TR' || childNodes.length === 0) {
             return false
         }
@@ -381,6 +395,10 @@ export function isTableValid(table: Node, verifyColumns: boolean): boolean {
     }
 
     function validateCell(node: Node): boolean {
+        if (isNewLineNode(node)) {
+            return true
+        }
+
         const { nodeName } = node
         if (nodeName !== 'TD' && nodeName !== 'TH') {
             return false

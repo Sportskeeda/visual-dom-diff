@@ -13,6 +13,7 @@ import {
     isElement,
     isText,
     never,
+    isNewLineNode,
 } from './util'
 
 const window = new JSDOM('').window
@@ -34,6 +35,8 @@ const anotherFragment = document.createDocumentFragment()
 const pChar = charForNodeName('P')
 const ulChar = charForNodeName('UL')
 const liChar = charForNodeName('LI')
+const newLine = document.createTextNode('text')
+const newLineWithNull = document.createTextNode('text')
 
 span.setAttribute('data-a', 'a')
 span.setAttribute('data-b', 'b')
@@ -47,6 +50,8 @@ differentAttributeValuesSpan.setAttribute('data-b', 'different b')
 differentChildNodesSpan.setAttribute('data-a', 'a')
 differentChildNodesSpan.setAttribute('data-b', 'b')
 differentChildNodesSpan.appendChild(document.createTextNode('different'))
+newLine.textContent = ' \n   '
+newLineWithNull.textContent = null
 
 describe('isText', () => {
     test('return true given a text node', () => {
@@ -635,5 +640,20 @@ describe('cleanUpNodeMarkers', () => {
             [DIFF_INSERT, `${pChar}abc`],
             [DIFF_EQUAL, `${pChar}${pChar}xyz`],
         ])
+    })
+})
+
+describe('isNewLineNode', () => {
+    test('return true given a new line node', () => {
+        expect(isNewLineNode(newLine)).toBe(true)
+    })
+    test('return false given a new line node with null text', () => {
+        expect(isNewLineNode(newLineWithNull)).toBe(false)
+    })
+    test('return false given a non new line text node', () => {
+        expect(isNewLineNode(text)).toBe(false)
+    })
+    test('return false given a SPAN', () => {
+        expect(isNewLineNode(span)).toBe(false)
     })
 })
