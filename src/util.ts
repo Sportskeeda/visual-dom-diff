@@ -30,8 +30,16 @@ export function strictEqual<T>(item1: T, item2: T): boolean {
     return item1 === item2
 }
 
-export function isNewLineNode(node: Node): node is Text {
-    return isText(node) && (node.textContent || '').replace(/ /g, '') === '\n'
+export function isNewLineNode(node: Node): boolean {
+    return isText(node) && removeWhiteSpaces(node.textContent || '') === '\n'
+}
+
+export function isEmptyTextNode(node: Node): boolean {
+    return isText(node) && removeWhiteSpaces(node.textContent || '').length < 1
+}
+
+export function removeWhiteSpaces(text: string): string {
+    return text.replace(/ /g, '')
 }
 
 export function areArraysEqual<T>(
@@ -327,7 +335,8 @@ export function isTableValid(table: Node, verifyColumns: boolean): boolean {
         if (
             i < l &&
             (childNodes[i].nodeName === 'CAPTION' ||
-                isNewLineNode(childNodes[i]))
+                isNewLineNode(childNodes[i]) ||
+                isEmptyTextNode(node))
         ) {
             i++
         }
@@ -371,7 +380,7 @@ export function isTableValid(table: Node, verifyColumns: boolean): boolean {
     }
 
     function validateRow(node: Node): boolean {
-        if (isNewLineNode(node)) {
+        if (isNewLineNode(node) || isEmptyTextNode(node)) {
             return true
         }
 
@@ -395,7 +404,7 @@ export function isTableValid(table: Node, verifyColumns: boolean): boolean {
     }
 
     function validateCell(node: Node): boolean {
-        if (isNewLineNode(node)) {
+        if (isNewLineNode(node) || isEmptyTextNode(node)) {
             return true
         }
 

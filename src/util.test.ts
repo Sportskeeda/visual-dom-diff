@@ -14,6 +14,7 @@ import {
     isText,
     never,
     isNewLineNode,
+    isEmptyTextNode,
 } from './util'
 
 const window = new JSDOM('').window
@@ -35,8 +36,9 @@ const anotherFragment = document.createDocumentFragment()
 const pChar = charForNodeName('P')
 const ulChar = charForNodeName('UL')
 const liChar = charForNodeName('LI')
-const newLine = document.createTextNode('text')
-const newLineWithNull = document.createTextNode('text')
+const newLine = document.createTextNode(' \n   ')
+const textWithNull = document.createTextNode('')
+const emptyText = document.createTextNode('  ')
 
 span.setAttribute('data-a', 'a')
 span.setAttribute('data-b', 'b')
@@ -50,8 +52,7 @@ differentAttributeValuesSpan.setAttribute('data-b', 'different b')
 differentChildNodesSpan.setAttribute('data-a', 'a')
 differentChildNodesSpan.setAttribute('data-b', 'b')
 differentChildNodesSpan.appendChild(document.createTextNode('different'))
-newLine.textContent = ' \n   '
-newLineWithNull.textContent = null
+textWithNull.textContent = null
 
 describe('isText', () => {
     test('return true given a text node', () => {
@@ -647,13 +648,28 @@ describe('isNewLineNode', () => {
     test('return true given a new line node', () => {
         expect(isNewLineNode(newLine)).toBe(true)
     })
-    test('return false given a new line node with null text', () => {
-        expect(isNewLineNode(newLineWithNull)).toBe(false)
+    test('return false given a text node with null content', () => {
+        expect(isNewLineNode(textWithNull)).toBe(false)
     })
     test('return false given a non new line text node', () => {
         expect(isNewLineNode(text)).toBe(false)
     })
     test('return false given a SPAN', () => {
         expect(isNewLineNode(span)).toBe(false)
+    })
+})
+
+describe('isEmptyTextNode', () => {
+    test('return true given a new line node', () => {
+        expect(isEmptyTextNode(emptyText)).toBe(true)
+    })
+    test('return true given a text node with null content', () => {
+        expect(isEmptyTextNode(textWithNull)).toBe(true)
+    })
+    test('return false given a non empty line text node', () => {
+        expect(isEmptyTextNode(newLine)).toBe(false)
+    })
+    test('return false given a SPAN', () => {
+        expect(isEmptyTextNode(span)).toBe(false)
     })
 })
