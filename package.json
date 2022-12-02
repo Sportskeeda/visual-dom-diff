@@ -6,8 +6,11 @@
   "types": "lib/module/index.d.ts",
   "files": [
     "/lib",
+    "!/lib/umd/visual-dom-diff.js",
     "!/lib/**/*.test.js",
-    "!/lib/**/*.test.d.ts"
+    "!/lib/**/*.test.d.ts",
+    "!/lib/**/**/*.test.js",
+    "!/lib/**/**/*.test.d.ts"
   ],
   "scripts": {
     "clean": "rimraf lib",
