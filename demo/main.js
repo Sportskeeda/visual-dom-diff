@@ -1,4 +1,4 @@
-import { visualDomDiff } from '../lib'
+import { visualDomDiff } from '../lib/module'
 import './main.css'
 
 window.addEventListener('load', function () {
