@@ -2,8 +2,8 @@
   "name": "visual-dom-diff",
   "version": "0.7.2",
   "description": "Highlight differences between two DOM trees.",
-  "main": "lib/index.js",
-  "types": "lib/index.d.ts",
+  "main": "lib/module/index.js",
+  "types": "lib/module/index.d.ts",
   "files": [
     "/lib",
     "!/lib/**/*.test.js",
