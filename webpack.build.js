@@ -2,7 +2,7 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 const { CleanWebpackPlugin } = require('clean-webpack-plugin')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
-
+const CopyPlugin = require("copy-webpack-plugin");
 
 module.exports = [{
     entry: __dirname + '/lib/module/index.js',
@@ -37,7 +37,10 @@ module.exports = [{
     },
     plugins: [
         new HtmlWebpackPlugin({ template: __dirname + '/demo/index.html' }),
-        new CleanWebpackPlugin()
+        new CleanWebpackPlugin(),
+        new CopyPlugin({
+            patterns: [{ from: __dirname + "/demo/*.jpg", to: __dirname + "/docs/[name][ext]" }]
+        })
     ],
     devServer: {
         static: './demo'
