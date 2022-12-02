@@ -2,28 +2,33 @@
   "name": "visual-dom-diff",
   "version": "0.7.2",
   "description": "Highlight differences between two DOM trees.",
-  "main": "lib/index.js",
-  "types": "lib/index.d.ts",
+  "main": "lib/module/index.js",
+  "types": "lib/module/index.d.ts",
   "files": [
     "/lib",
+    "!/lib/umd/visual-dom-diff.js",
     "!/lib/**/*.test.js",
-    "!/lib/**/*.test.d.ts"
+    "!/lib/**/*.test.d.ts",
+    "!/lib/**/**/*.test.js",
+    "!/lib/**/**/*.test.d.ts"
   ],
   "scripts": {
     "clean": "rimraf lib",
-    "prettier-fix": "prettier \"./src/**/*\" \"./demo/**/*\" \"!./**/*.jpg\" --list-different --write",
-    "prettier": "prettier \"./src/**/*\" \"./demo/**/*\" \"!./**/*.jpg\" --list-different",
-    "tslint": "tslint --project .",
+    "prettier-fix": "prettier src/* demo/* --write",
+    "prettier": "prettier src/* demo/* --check",
+    "eslint": "eslint src demo",
+    "eslint-fix": "eslint src demo --fix",
     "tsc": "tsc -b .",
     "test": "jest",
-    "build": "run-s clean prettier tslint tsc test",
-    "demo": "webpack -p",
+    "build": "run-s clean eslint prettier tsc test",
+    "webpack:build": "npm run tsc && webpack --mode=production --config webpack.build.js",
     "start": "run-p start:*",
-    "start:demo": "webpack-dev-server -d",
+    "start:demo": "webpack serve --open --mode=development --config webpack.dev.js",
     "start:tsc": "tsc -b -w .",
     "preversion": "npm outdated && run-s build demo && git add docs",
     "postversion": "git push && git push origin v${npm_package_version}",
-    "benchmark": "node benchmark"
+    "benchmark": "node benchmark",
+    "prepare": "husky install"
   },
   "repository": {
     "type": "git",
@@ -40,37 +45,36 @@
     "url": "https://github.com/Teamwork/visual-dom-diff/issues"
   },
   "homepage": "https://github.com/Teamwork/visual-dom-diff#readme",
-  "husky": {
-    "hooks": {
-      "pre-commit": "npm run build"
-    }
-  },
   "devDependencies": {
-    "@types/jest": "^24.0.22",
-    "@types/jsdom": "^12.2.4",
+    "@types/jest": "^29.2.0",
+    "@types/jsdom": "^20.0.0",
+    "@typescript-eslint/eslint-plugin": "^5.40.1",
+    "@typescript-eslint/parser": "^5.40.1",
     "benchmark": "^2.1.4",
-    "clean-webpack-plugin": "^3.0.0",
-    "css-loader": "^3.2.0",
-    "file-loader": "^4.2.0",
-    "html-loader": "^0.5.5",
-    "html-webpack-plugin": "^3.2.0",
-    "husky": "^3.0.9",
-    "jest": "^24.9.0",
-    "jsdom": "^15.2.1",
+    "clean-webpack-plugin": "^4.0.0",
+    "copy-webpack-plugin": "^11.0.0",
+    "css-loader": "^6.7.1",
+    "eslint": "^8.26.0",
+    "eslint-config-prettier": "^8.5.0",
+    "file-loader": "^6.2.0",
+    "html-loader": "^4.2.0",
+    "html-webpack-plugin": "^5.5.0",
+    "husky": "^8.0.1",
+    "jest": "^29.2.1",
+    "jsdom": "^20.0.1",
     "npm-run-all": "^4.1.5",
-    "prettier": "^1.18.2",
-    "rimraf": "^3.0.0",
-    "style-loader": "^1.0.0",
-    "ts-jest": "^24.1.0",
-    "tslint": "^5.20.1",
-    "tslint-config-prettier": "^1.18.0",
-    "typescript": "^3.7.2",
-    "webpack": "^4.41.2",
-    "webpack-cli": "^3.3.10",
-    "webpack-dev-server": "^3.9.0"
+    "prettier": "2.7.1",
+    "rimraf": "^3.0.2",
+    "style-loader": "^3.3.1",
+    "terser-webpack-plugin": "^5.3.6",
+    "ts-jest": "^29.0.3",
+    "typescript": "^4.8.4",
+    "webpack": "^5.74.0",
+    "webpack-cli": "^4.10.0",
+    "webpack-dev-server": "^4.11.1"
   },
   "dependencies": {
     "@types/diff-match-patch": "^1.0.32",
-    "diff-match-patch": "^1.0.4"
+    "diff-match-patch": "^1.0.5"
   }
 }

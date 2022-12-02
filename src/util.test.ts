@@ -13,6 +13,8 @@ import {
     isElement,
     isText,
     never,
+    isNewLineNode,
+    isEmptyTextNode,
 } from './util'
 
 const window = new JSDOM('').window
@@ -34,6 +36,9 @@ const anotherFragment = document.createDocumentFragment()
 const pChar = charForNodeName('P')
 const ulChar = charForNodeName('UL')
 const liChar = charForNodeName('LI')
+const newLine = document.createTextNode(' \n   ')
+const textWithNull = document.createTextNode('')
+const emptyText = document.createTextNode('  ')
 
 span.setAttribute('data-a', 'a')
 span.setAttribute('data-b', 'b')
@@ -47,6 +52,7 @@ differentAttributeValuesSpan.setAttribute('data-b', 'different b')
 differentChildNodesSpan.setAttribute('data-a', 'a')
 differentChildNodesSpan.setAttribute('data-b', 'b')
 differentChildNodesSpan.appendChild(document.createTextNode('different'))
+textWithNull.textContent = null
 
 describe('isText', () => {
     test('return true given a text node', () => {
@@ -208,7 +214,8 @@ describe.each<[string, (() => string[]) | undefined]>([
         })
 
         afterAll(() => {
-            window.Element.prototype.getAttributeNames = originalGetAttributeNames
+            window.Element.prototype.getAttributeNames =
+                originalGetAttributeNames
         })
 
         describe('shallow', () => {
@@ -275,10 +282,9 @@ describe.each<[string, (() => string[]) | undefined]>([
             })
             test('extraneous child', () => {
                 const differentRootNode = rootNode.cloneNode(true)
-                ;((differentRootNode.lastChild as Node)
-                    .lastChild as Node).appendChild(
-                    document.createTextNode('different'),
-                )
+                ;(
+                    (differentRootNode.lastChild as Node).lastChild as Node
+                ).appendChild(document.createTextNode('different'))
                 expect(
                     areNodesEqual(
                         rootNode.cloneNode(true),
@@ -289,8 +295,9 @@ describe.each<[string, (() => string[]) | undefined]>([
             })
             test('child with a different attribute', () => {
                 const differentRootNode = rootNode.cloneNode(true)
-                ;((differentRootNode.lastChild as Node)
-                    .lastChild as Element).setAttribute('data-a', 'a')
+                ;(
+                    (differentRootNode.lastChild as Node).lastChild as Element
+                ).setAttribute('data-a', 'a')
                 expect(
                     areNodesEqual(
                         rootNode.cloneNode(true),
@@ -330,8 +337,9 @@ describe('getAncestors', () => {
     ]
 
     testData.forEach(([node, rootNode, ancestors]) => {
-        test(`node: ${node.nodeName}; root: ${rootNode &&
-            rootNode.nodeName}`, () => {
+        test(`node: ${node.nodeName}; root: ${
+            rootNode && rootNode.nodeName
+        }`, () => {
             expect(getAncestors(node, rootNode)).toStrictEqual(ancestors)
         })
     })
@@ -545,7 +553,7 @@ describe('diffText', () => {
             '\uDFFF\uF900',
         ])(
             'identical text without node markers inside changed text (%#)',
-            string => {
+            (string) => {
                 expect(
                     diffText(`abcdef${string}ghijkl`, `123456${string}7890-=`),
                 ).toStrictEqual([
@@ -562,7 +570,7 @@ describe('diffText', () => {
             '\uE000!\uF8FF',
         ])(
             'identical text with node markers inside changed text (%#)',
-            string => {
+            (string) => {
                 expect(
                     diffText(`abcdef${string}ghijkl`, `123456${string}7890-=`),
                 ).toStrictEqual([
@@ -586,7 +594,7 @@ describe('cleanUpNodeMarkers', () => {
         ]
         cleanUpNodeMarkers(diff)
         expect(diff).toStrictEqual([
-            [DIFF_EQUAL, `abc`],
+            [DIFF_EQUAL, 'abc'],
             [DIFF_DELETE, `${pChar}${ulChar}${liChar}${liChar}`],
             [
                 DIFF_EQUAL,
@@ -602,7 +610,7 @@ describe('cleanUpNodeMarkers', () => {
         ]
         cleanUpNodeMarkers(diff)
         expect(diff).toStrictEqual([
-            [DIFF_EQUAL, `abc`],
+            [DIFF_EQUAL, 'abc'],
             [DIFF_INSERT, `${pChar}${ulChar}${liChar}${liChar}`],
             [
                 DIFF_EQUAL,
@@ -633,5 +641,35 @@ describe('cleanUpNodeMarkers', () => {
             [DIFF_INSERT, `${pChar}abc`],
             [DIFF_EQUAL, `${pChar}${pChar}xyz`],
         ])
+    })
+})
+
+describe('isNewLineNode', () => {
+    test('return true given a new line node', () => {
+        expect(isNewLineNode(newLine)).toBe(true)
+    })
+    test('return false given a text node with null content', () => {
+        expect(isNewLineNode(textWithNull)).toBe(false)
+    })
+    test('return false given a non new line text node', () => {
+        expect(isNewLineNode(text)).toBe(false)
+    })
+    test('return false given a SPAN', () => {
+        expect(isNewLineNode(span)).toBe(false)
+    })
+})
+
+describe('isEmptyTextNode', () => {
+    test('return true given a new line node', () => {
+        expect(isEmptyTextNode(emptyText)).toBe(true)
+    })
+    test('return true given a text node with null content', () => {
+        expect(isEmptyTextNode(textWithNull)).toBe(true)
+    })
+    test('return false given a non empty line text node', () => {
+        expect(isEmptyTextNode(newLine)).toBe(false)
+    })
+    test('return false given a SPAN', () => {
+        expect(isEmptyTextNode(span)).toBe(false)
     })
 })

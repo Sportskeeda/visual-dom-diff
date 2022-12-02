@@ -30,6 +30,18 @@ export function strictEqual<T>(item1: T, item2: T): boolean {
     return item1 === item2
 }
 
+export function isNewLineNode(node: Node): boolean {
+    return isText(node) && removeWhiteSpaces(node.textContent || '') === '\n'
+}
+
+export function isEmptyTextNode(node: Node): boolean {
+    return isText(node) && removeWhiteSpaces(node.textContent || '').length < 1
+}
+
+export function removeWhiteSpaces(text: string): string {
+    return text.replace(/ /g, '')
+}
+
 export function areArraysEqual<T>(
     array1: T[],
     array2: T[],
@@ -71,11 +83,7 @@ function getAttributeNames(element: Element): string[] {
  * @param deep If true, the child nodes are compared recursively too.
  * @returns `true`, if the 2 nodes are equal, otherwise `false`.
  */
-export function areNodesEqual(
-    node1: Node,
-    node2: Node,
-    deep: boolean = false,
-): boolean {
+export function areNodesEqual(node1: Node, node2: Node, deep = false): boolean {
     if (node1 === node2) {
         return true
     }
@@ -152,9 +160,7 @@ export function getAncestors(node: Node, rootNode: Node | null = null): Node[] {
     return ancestors
 }
 
-export function never(
-    message: string = 'visual-dom-diff: Should never happen',
-): never {
+export function never(message = 'visual-dom-diff: Should never happen'): never {
     throw new Error(message)
 }
 
@@ -321,11 +327,17 @@ export function isTableValid(table: Node, verifyColumns: boolean): boolean {
     let columnCount: number | undefined
     return validateTable(table)
 
-    function validateTable({ childNodes }: Node): boolean {
+    function validateTable(node: Node): boolean {
+        const { childNodes } = node
         const l = childNodes.length
         let i = 0
 
-        if (i < l && childNodes[i].nodeName === 'CAPTION') {
+        if (
+            i < l &&
+            (childNodes[i].nodeName === 'CAPTION' ||
+                isNewLineNode(childNodes[i]) ||
+                isEmptyTextNode(node))
+        ) {
             i++
         }
 
@@ -367,7 +379,12 @@ export function isTableValid(table: Node, verifyColumns: boolean): boolean {
         return true
     }
 
-    function validateRow({ childNodes, nodeName }: Node): boolean {
+    function validateRow(node: Node): boolean {
+        if (isNewLineNode(node) || isEmptyTextNode(node)) {
+            return true
+        }
+
+        const { childNodes, nodeName } = node
         if (nodeName !== 'TR' || childNodes.length === 0) {
             return false
         }
@@ -387,6 +404,10 @@ export function isTableValid(table: Node, verifyColumns: boolean): boolean {
     }
 
     function validateCell(node: Node): boolean {
+        if (isNewLineNode(node) || isEmptyTextNode(node)) {
+            return true
+        }
+
         const { nodeName } = node
         if (nodeName !== 'TD' && nodeName !== 'TH') {
             return false

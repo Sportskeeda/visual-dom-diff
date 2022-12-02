@@ -5,7 +5,7 @@
     "lib": ["es6", "dom"],
     "moduleResolution": "node",
     "rootDir": "./src",
-    "outDir": "./lib",
+    "outDir": "./lib/module",
     "preserveConstEnums": true,
     "declaration": true,
     "importHelpers": true,

@@ -907,6 +907,67 @@ test.each<[string, Node, Node, string, Options | undefined]>([
         '<table><thead class="vdd-removed"><tr><th>1111</th><th>2222</th><th>3333</th></tr></thead><tbody><tr><th>first column</th><th class="vdd-removed">second column</th><th>last column</th></tr></tbody></table>',
         undefined,
     ],
+    [
+        'table - valid with new line',
+        htmlToFragment(`
+            <table style="width:100%">
+            <tr>
+                <th>Company</th>
+                <th>Contact</th>
+                <th>Country</th>
+            </tr>
+            <tr>
+                <td>Alfreds Futterkiste</td>
+                <td>Maria Anders</td>
+                <td>Germany</td>
+            </tr>
+            <tr>
+                <td>Centro comercial Moctezuma</td>
+                <td>Francisco Chang</td>
+                <td>Mexico</td>
+            </tr>
+            </table>
+        `),
+        htmlToFragment(`
+            <table style="width:100%">
+            <tr>
+                <th>Company</th>
+                <th>Contact</th>
+                <th>Country</th>
+            </tr>
+            <tr>
+                <td>Alfreds Futterkiste</td>
+                <td>Maria Anders</td>
+                <td>Germany</td>
+            </tr>
+            <tr>
+                <td>Centro comercial Moctezuma</td>
+                <td>Francisco Chang</td>
+                <td>Mexico</td>
+            </tr>
+            </table>
+        `),
+        `
+            <table style="width:100%">
+            <tbody><tr>
+                <th>Company</th>
+                <th>Contact</th>
+                <th>Country</th>
+            </tr>
+            <tr>
+                <td>Alfreds Futterkiste</td>
+                <td>Maria Anders</td>
+                <td>Germany</td>
+            </tr>
+            <tr>
+                <td>Centro comercial Moctezuma</td>
+                <td>Francisco Chang</td>
+                <td>Mexico</td>
+            </tr>
+            </tbody></table>
+        `,
+        undefined,
+    ],
 ])(
     '%s',
     (

@@ -1,0 +1,7 @@
+benchmark
+coverage
+docs
+lib
+node_modules
+**/*.jpg
+**/*.png
